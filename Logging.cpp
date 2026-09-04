@@ -12,14 +12,8 @@ NO AI WAS USED IN THE PRODUCTION OF THIS CODE
 using namespace std ;
 namespace os  = std :: filesystem ;
 
-
 // ==== Configs and Hyper Params ==== //
-
-
 os :: path cwd = os :: current_path() ;
-
-
-fstream f;
 
 enum class LEVEL{ // i shall add log level no when the need arises , dont really see the use to add them 
     INFO ,
@@ -30,74 +24,90 @@ enum class LEVEL{ // i shall add log level no when the need arises , dont really
 
 }  ;
 
+// =========================== HELPER FUNCTIONs ========================================== //
+namespace Log_Function {
+    // void file_create(fstream &File ) { // 
+    //     try {
+    //     // create file empty file 
+    //     if (File){
+    //         File << " ================= LOG FILE ===================== "<<'\n' ;
+    //         cout<< "INFO : -> [ FILE CREATED ] " ; //return true ;
+    //     }
+        
+    //     if(!File) {
+    //         throw runtime_error(" [ Opening File ]")  ;
+    //        // return false ;        
+    //         }
+    //     }
+    //     catch(runtime_error &e ) {
+    //         cerr << "ERROR : " << e.what() << '\n';
+    //         //return false ;
+    //     } 
+    // }
 
-// void file_create(fstream &File ) { // 
-//     try {
-//     // create file empty file 
-//     if (File){
-//         File << " ================= LOG FILE ===================== "<<'\n' ;
-//         cout<< "INFO : -> [ FILE CREATED ] " ; //return true ;
-//     }
-    
-//     if(!File) {
-//         throw runtime_error(" [ Opening File ]")  ;
-//        // return false ;        
-//         }
-//     }
-//     catch(runtime_error &e ) {
-//         cerr << "ERROR : " << e.what() << '\n';
-//         //return false ;
-//     } 
-// }
+    void LOG_FILE(os :: path &File , string &message , string &level ) { // openfile and append to it function 
 
-void append_file(os :: path &File , string &message , LEVEL &level ) { // openfile and append to it function 
+        fstream file (File , ios ::app) ; 
+        // string warning_level ;
 
-    fstream file (File , ios ::app) ; 
-    string warning_level ; 
-    auto time = chrono ::system_clock::now() ;
+        auto time = chrono ::system_clock::now() ;
 
-    if(level == LEVEL :: INFO ) {
-        warning_level = "INFO " ;
-    }
-    else if (level == LEVEL ::DEBUG) {
-        warning_level = "DEBUG " ;
-    }
-    else if (level == LEVEL :: WARNING ) {
-        warning_level =  "WARNING " ;
+        // if(level == LEVEL :: INFO ) {
+        //     warning_level = "INFO " ;
+        // }
+        // else if (level == LEVEL ::DEBUG) {
+        //     warning_level = "DEBUG " ;
+        // }
+        // else if (level == LEVEL :: WARNING ) {
+        //     warning_level =  "WARNING " ;
 
-    }
-    else if (level == LEVEL ::ERROR) {
-        warning_level = "ERROR : " ;
-    }
-    else if (level == LEVEL ::CRITICAL) {
-        warning_level = "CRITICAL : " ;
-    }
-    try {
+        // }
+        // else if (level == LEVEL ::ERROR) {
+        //     warning_level = "ERROR : " ;
+        // }
+        // else if (level == LEVEL ::CRITICAL) {
+        //     warning_level = "CRITICAL : " ;
+        // }
+        try {
 
-    if (!file) {
-        throw std :: runtime_error (" FILE NOT FOUND ") ;
-    }
-    else {
-        string message_formated = std :: format ("TIME : {} | {} [  {}  ]",time ,warning_level ,message);
-        file <<message_formated <<'\n';
+        if (!file) {
+            throw std :: runtime_error (" FILE NOT FOUND ") ;
         }
-    }catch(std :: runtime_error &e){
-        cerr << "ERROR " << e.what() << '\n'; 
+        else {
+            string message_formated = std :: format ("TIME : {} | {} :[  {}  ] ",time ,level ,message);
+            file <<message_formated <<'\n';
+            }
+        }catch(std :: runtime_error &e){
+            cerr << "ERROR " << e.what() << '\n'; 
+        }
+        
     }
-    
-}
-void LOG_CONSOLE (string &message , LEVEL &level) { // Function to log to console and not file  
-    
-}
-namespace LOG {
+    std ::string console_level (LEVEL &level ) { /*------ Converts log levels to string -----------*/
+        try {
+            switch(level) {/*-------------- elegance ------------------*/
+                case LEVEL :: INFO     : return "INFO"    ;  break ;        
+                case LEVEL :: DEBUG    : return "DEBUG"   ;  break ; 
+                case LEVEL :: ERROR    : return "ERORR"   ;  break ; 
+                case LEVEL :: WARNING  : return "WARNING" ;  break; 
+                case LEVEL :: CRITICAL : return "CRITICAL";  break ;
+                default : throw std :: runtime_error("UNKNOWN VALUE PASED "); break ;
+            }
+        }
+        catch (std :: runtime_error &e ){cerr << "ERROR : " << e.what() ;  }
+    }
 
+    void LOG_CONSOLE (string &message , string &level) { // Function to log to console and not file  
+        std :: string console_log = std :: format("{} : {} ",level,message);
+        cerr << console_log << '\n' ;
+    }
+}
+namespace Log { 
     class logging {
         public : //basically i dont really see the ude of adding private for the filenames cause it just a logging library right ? 
             string filename ; 
             bool log_console ;
 
-            void log_file(string &message , LEVEL level ){ // for file saving only first 
-               
+            void log_file(string &message , LEVEL level ){ // Saving to file     
                 os :: path log_dir = "LOG" ;
                 os :: path  log_folder = cwd / log_dir ; //path -> cwd / LOG 
 
@@ -106,56 +116,32 @@ namespace LOG {
                 }
                 fstream File(log_dir/filename) ;
                 //file_create(File) ; // create file
+ 
                 os :: path file_append = log_folder /filename ; // path to log file 
-
-            
-                if (level == LEVEL ::INFO ){
-                append_file(file_append ,message, level ) ;     
-                if (log_console == true ) {
-                    cerr <<" INFO : " <<message << '\n' ; 
-                    }
-                }
-
-                if (level == LEVEL ::DEBUG ) { 
-                    append_file(file_append ,message, level ) ;
-                                       
-                    if (log_console == true ){
-                        cerr <<" DEBUG : " <<message << '\n' ; 
-                    }
-                }
-                if (level == LEVEL ::ERROR){
-                    append_file(file_append ,message, level ) ;
-                    if (log_console == true){
-                        cerr <<" ERROR : " <<message << '\n' ;                        
-                    }
-                }
-                if (level == LEVEL ::WARNING ){
-                    append_file(file_append ,message, level ) ;
-                    if (log_console == true){
-                        cerr <<" WARNING : " <<message << '\n' ;                        
-                    }
-                }
-                if (level == LEVEL ::CRITICAL){
-                    append_file(file_append ,message, level ) ;
-                    if(log_console ==true ){
-                        cerr <<" CRITICAL : " <<message << '\n' ; 
-                    }
-                }
+                string  _level_ = Log_Function :: console_level(level) ;
+                Log_Function::LOG_FILE(file_append ,message , _level_) ;           
                 
+                if (log_console == true ){ // log to console if true 
+                   Log_Function ::LOG_CONSOLE(message , _level_) ;
+                } 
             }
-    }; 
+        }; 
 
+    void log_console(string messages , LEVEL level) {// log to console level 
+        string  _level_ = Log_Function :: console_level(level) ;
+        Log_Function ::LOG_CONSOLE(messages , _level_) ;
+    }    
 }
 
+// // =================== Testing Area ======================= //
+// int main () { 
 
-// =================== Testing Area ======================= //
-int main () { 
+//     Log :: logging log("log.txt" ,false) ;
+//     string mesage = "Hellfdfdfosdsd" ;
+//     string mes_age = "Hsasasdsdsdsa" ;
 
-    LOG :: logging log("text.txt" ,true) ;
-    string mesage = "Hellfdfdfo" ;
-    string mes_age = "Hsasasa" ;
+//     log.log_file(mesage,LEVEL :: INFO) ;
+//     log.log_file(mes_age , LEVEL::DEBUG) ;
+//     Log ::log_console("FUCK",LEVEL::INFO) ;
 
-    log.log_file(mesage,LEVEL :: INFO) ;
-    log.log_file(mes_age , LEVEL::DEBUG) ;
-
-}
+// }
