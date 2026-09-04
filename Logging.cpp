@@ -31,25 +31,24 @@ enum class LEVEL{ // i shall add log level no when the need arises , dont really
 }  ;
 
 
-bool file_create(fstream &File ) {
-    try {
-    // create file empty file 
-    if (File){
-        File << " ================= LOG FILE ===================== "<<'\n' ;
-        cout<< "INFO : -> [ FILE CREATED ] " ; return true ;
-    }
+// void file_create(fstream &File ) { // 
+//     try {
+//     // create file empty file 
+//     if (File){
+//         File << " ================= LOG FILE ===================== "<<'\n' ;
+//         cout<< "INFO : -> [ FILE CREATED ] " ; //return true ;
+//     }
     
-    if(!File) {
-        throw runtime_error(" [ Opening File ]")  ;
-        return false ;        
-        }
-    }
-    catch(runtime_error &e ) {
-        cerr << "ERROR : " << e.what() << '\n';
-        return false ;
-    } 
-
-}
+//     if(!File) {
+//         throw runtime_error(" [ Opening File ]")  ;
+//        // return false ;        
+//         }
+//     }
+//     catch(runtime_error &e ) {
+//         cerr << "ERROR : " << e.what() << '\n';
+//         //return false ;
+//     } 
+// }
 
 void append_file(os :: path &File , string &message , LEVEL &level ) { // openfile and append to it function 
 
@@ -79,8 +78,8 @@ void append_file(os :: path &File , string &message , LEVEL &level ) { // openfi
         throw std :: runtime_error (" FILE NOT FOUND ") ;
     }
     else {
-        string message_formated = std :: format (" TIME : {} | {} [  {}  ]",time ,warning_level ,message);
-        file <<message_formated ;
+        string message_formated = std :: format ("TIME : {} | {} [  {}  ]",time ,warning_level ,message);
+        file <<message_formated <<'\n';
         }
     }catch(std :: runtime_error &e){
         cerr << "ERROR " << e.what() << '\n'; 
@@ -100,13 +99,13 @@ namespace LOG {
             void log_file(string &message , LEVEL level ){ // for file saving only first 
                
                 os :: path log_dir = "LOG" ;
-                os :: path  log_folder = cwd / log_dir ;
+                os :: path  log_folder = cwd / log_dir ; //path -> cwd / LOG 
 
                 if (! os :: exists(log_folder)) {
                     os :: create_directory(log_folder) ;
                 }
                 fstream File(log_dir/filename) ;
-                file_create(File) ; // create file
+                //file_create(File) ; // create file
                 os :: path file_append = log_folder /filename ; // path to log file 
 
             
