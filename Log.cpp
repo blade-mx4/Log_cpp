@@ -28,25 +28,7 @@ os :: path cwd = os :: current_path() ;
 
 // =========================== HELPER FUNCTIONs ========================================== //
 namespace Log_Function {
-    // void file_create(fstream &File ) { // 
-    //     try {
-    //     // create file empty file 
-    //     if (File){
-    //         File << " ================= LOG FILE ===================== "<<'\n' ;
-    //         cout<< "INFO : -> [ FILE CREATED ] " ; //return true ;
-    //     }
-        
-    //     if(!File) {
-    //         throw runtime_error(" [ Opening File ]")  ;
-    //        // return false ;        
-    //         }
-    //     }
-    //     catch(runtime_error &e ) {
-    //         cerr << "ERROR : " << e.what() << '\n';
-    //         //return false ;
-    //     } 
-    // }
-
+    
     void LOG_FILE(os :: path &File , std :: string &message , std :: string &warning_level ) { // openfile and append to it function 
 
         std ::fstream file (File , std::ios ::app) ; 
@@ -89,10 +71,6 @@ namespace Log_Function {
 /*--------------------MAIN LOGGING FUNCTION------------------ */
 
 namespace Log { 
-    // class Logger{
-    //     public : //basically i dont really see the ude of adding private for the filenames cause it just a logging library right ? 
-    //         std ::string filename ; 
-    //         bool to_console ;
 
     void Logger::log_file(std ::string message , LEVEL level ){ // Saving to file     
         /*
@@ -120,21 +98,8 @@ namespace Log {
     }
         // }; 
 
-    void log_console(std::string messages , LEVEL level_status) {// log to console level 
+    void Logger :: log_console(std::string messages , LEVEL level_status) {// log to console level 
         std::string  warining_level = Log_Function :: console_level(level_status) ;
         Log_Function ::LOG_CONSOLE(messages , warining_level) ;
     }    
 }
-
-// // =================== Testing Area ======================= //
-// int main () { 
-
-//     Log :: logging log("log.txt" ,false) ;
-//     string mesage = "Hellfdfdfosdsd" ;
-//     string mes_age = "Hsasasdsdsdsa" ;
-
-//     log.log_file(mesage,LEVEL :: INFO) ;
-//     log.log_file(mes_age , LEVEL::DEBUG) ;
-//     Log ::log_console("FUCK",LEVEL::INFO) ;
-
-// }
