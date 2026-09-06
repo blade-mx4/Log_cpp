@@ -22,7 +22,8 @@
   * GCC 13+
   * Clang 14+
   * MSVC 2019 (v16.10+)
-
+  * your_app.cpp Log.cpp <-- to compile
+    
 ---
 
 ## 🚀 Quick Start
