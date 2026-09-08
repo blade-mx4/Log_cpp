@@ -1,24 +1,26 @@
 # log_cpp
 
-> *Simple Logging library , Created cause i was to lazy to download a logging library 😭😭*
+> A lightweight, zero-dependency C++20 logging library for file and console logging.
 
 ---
 
-`log_cpp` is a lightweight, zero-dependency C++20 logging header library. It handles file logging, console output, timestamping, and automatic directory management out of the box using modern C++ standard libraries.
+`log_cpp` is a straightforward logging utility written in modern C++20. It provides hassle-free log handling, automatic directory creation, console mirroring, and timestamped output using standard library facilities (`<format>`, `<filesystem>`, and `<chrono>`).
 
-## 💡 Features
+---
 
-* **Zero External Dependencies:** Built entirely using modern C++20 standard libraries (`<format>`, `<filesystem>`, `<chrono>`).
-* **Automatic Directory Setup:** Automatically checks for and creates a `LOG/` directory relative to your current working directory.
-* **Dual Output Modes:** Option to log to disk, standard error (`std::cerr`), or both simultaneously.
-* **Categorized Severity:** Built-in enum support for `INFO`, `DEBUG`, `WARNING`, `ERROR`, and `CRITICAL`.
+## 🚀 Features
+
+* **Zero External Dependencies:** Built entirely using modern C++20 standard libraries.
+* **Automated Folder Management:** Automatically creates and writes to a `LOG/` directory in the working directory.
+* **Dual Logging Modes:** Log directly to disk, stream directly to console (`std::cerr`), or mirror file logs to standard error.
+* **Structured Severity Levels:** Clear enum support for `INFO`, `DEBUG`, `WARNING`, `ERROR`, and `CRITICAL`.
 
 ---
 
 ## 🛠️ Requirements
 
-* **Language Standard:** **C++20** or higher (required for `<format>` and `<filesystem>`).
-* **Compilers:**
+* **C++ Standard:** C++20 or higher (required for `<format>`, `<filesystem>`, and `<chrono>`).
+* **Supported Compilers:**
   * GCC 13+
   * Clang 14+
   * MSVC 2019 (v16.10+)
@@ -26,36 +28,37 @@
     
 ---
 
-## 🚀 Quick Start
+## 📦 Getting Started
 
-### 1. Include in Your Project
+### 1. Header Inclusion
 
-Include `log_cpp.hpp` in your code:
+Include `LOG.h` in your project along with compiling `Log.cpp`:
 
 ```cpp
-#include "log_cpp.hpp"
+#include "LOG.h"
 ```
 
 ### 2. Basic Example
 
 ```cpp
-#include "log_cpp.hpp"
+#include <iostream>
+#include "LOG.h"
+
+using namespace Log;
 
 int main() {
-    // Initialize logger instance
-    Log::logging logger;
+    // Instantiate a Logger instance
+    Logger logger;
     logger.filename = "app_log.txt";
-    logger.log_console = true; // Mirrors file logs to console
+    logger.to_console = true; // Set to true to echo file logs to console
 
-    std::string msg1 = "Application started successfully";
-    std::string msg2 = "Fetching system config";
-
-    // Write to log file (and console if log_console is true)
-    logger.log_file(msg1, LEVEL::INFO);
-    logger.log_file(msg2, LEVEL::DEBUG);
+    // Log to file (and console if to_console is true)
+    logger.log_file("Application initialized successfully", LEVEL::INFO);
+    logger.log_file("Configuration file loaded", LEVEL::DEBUG);
+    logger.log_file("High memory usage detected", LEVEL::WARNING);
 
     // Direct console-only log
-    Log::log_console("Console-only debug message", LEVEL::INFO);
+    logger.log_console("Console-only notification", LEVEL::INFO);
 
     return 0;
 }
@@ -63,25 +66,10 @@ int main() {
 
 ---
 
-## 📄 Output Examples
-
-### File Output (`LOG/app_log.txt`)
-```text
-TIME : 2026-09-04 20:53:54.1234567 | INFO :[ Application started successfully ] 
-TIME : 2026-09-04 20:53:54.1234890 | DEBUG :[ Fetching system config ] 
-```
-
-### Console Output (`std::cerr`)
-```text
-INFO : Application started successfully
-DEBUG : Fetching system config
-```
-
----
-
 ## 📑 API Reference
 
-### Severity Levels (`LEVEL`)
+### Log Severity Enum (`LEVEL`)
+
 ```cpp
 enum class LEVEL {
     INFO,
@@ -92,19 +80,41 @@ enum class LEVEL {
 };
 ```
 
-### `Log::logging` Class
+---
+
+### `Log::Logger` Class
+
+The primary interface for creating log instances and managing output.
+
+#### Public Member Variables
 
 | Member | Type | Description |
 | :--- | :--- | :--- |
-| `filename` | `std::string` | Target file name stored inside the `LOG/` directory. |
-| `log_console` | `bool` | Set `true` to echo file log entries directly to standard error (`cerr`). |
-| `log_file(message, level)` | `void` | Formats and appends a log entry to the specified file. |
+| `filename` | `std::string` | Target log filename stored inside the automatic `LOG/` directory. |
+| `to_console` | `bool` | Set to `true` to duplicate `log_file()` output directly to `std::cerr`. |
 
-### Helper Functions
+#### Public Member Functions
 
-| Function | Description |
-| :--- | :--- |
-| `Log::log_console(message, level)` | Directly prints formatted severity level and message to `cerr`. |
+| Function Signature | Return Type | Description |
+| :--- | :--- | :--- |
+| `log_file(std::string message, LEVEL level)` | `void` | Appends a timestamped log entry to `LOG/<filename>`. Also prints to console if `to_console` is set to `true`. |
+| `log_console(std::string message, LEVEL level)` | `void` | Prints a formatted log message directly to standard error (`std::cerr`) without writing to disk. |
+
+---
+
+## 📄 Output Formatting
+
+### File Output (`LOG/<filename>`)
+```text
+TIME : 2026-09-05 10:15:30.123456 | INFO :[ Application initialized successfully ] 
+TIME : 2026-09-05 10:15:30.123890 | WARNING :[ High memory usage detected ] 
+```
+
+### Console Output (`std::cerr`)
+```text
+INFO : Application initialized successfully 
+WARNING : High memory usage detected 
+```
 
 ---
 
