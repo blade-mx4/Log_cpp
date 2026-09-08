@@ -9,7 +9,6 @@ namespace os = std :: filesystem ;
 
 /* --------- Configs and Hyper Param--------- */
 
-
 enum class Level{ // i shall add log level no when the need arises , dont really see the use to add them 
     INFO ,
     DEBUG ,
@@ -32,18 +31,19 @@ os ::path create_log(std :: string file_name) {
     if (!os :: exists(log_folder)) {
         os :: create_directory(log_folder)  ;
     }
-
-    std::ofstream LOG_FILE (log_folder/file_name) ; // creates file 
+    os ::path log_file_path = log_folder/file_name ; 
+    std::ofstream LOG_FILE (log_file_path) ; // creates file 
 
     try {
         if (!LOG_FILE) {
             throw std :: runtime_error("FILE OPERATION ERROR") ;
             
         }
-
-        std::fstream LOG_FILE_WRITE(log_folder/file_name) ; // write to created file basically for beautification and small feature up scale 
-        std::string LOG_WRITE = std :: format ("LOG STARTED  @ DATE / TIME : {}",time);
-        LOG_FILE_WRITE << LOG_WRITE <<'\n';
+        if (!os::exists(log_file_path) ){
+            std::fstream LOG_FILE_WRITE(log_folder/file_name) ; // write to created file basically for beautification and small feature up scale 
+            std::string LOG_WRITE = std :: format ("LOG STARTED  @ DATE / TIME : {}",time);
+            LOG_FILE_WRITE << LOG_WRITE <<'\n';
+        }
     }
     catch(std :: runtime_error &Error) {
         std :: cerr << "ERROR -> "<<Error.what() ; 
@@ -51,8 +51,6 @@ os ::path create_log(std :: string file_name) {
     return log_folder / file_name ; // returns path if everything goes as planed 
 
 }
-
-
 /* ------------------------- Functions to help the main functions ----------------------- */
 
 namespace LOG_HELPER {
@@ -75,11 +73,12 @@ namespace LOG_HELPER {
             std::cerr <<"ERROR -> "<<Error.what(); 
            
         }
-        File.close() ;
+        File.close() ;// good file closing ethics like a good boy 
+
     }
     std ::string console_level (Level &level ) { 
     /*console_level
-      - takes the enum defined level and mapps it to a string then return is     
+     -takes the enum defined level and mapps it to a string then return is     
     */
     try {
         switch(level) {/*-------------- elegance ------------------*/
@@ -96,7 +95,7 @@ namespace LOG_HELPER {
 
     void LOG_CONSOLE(std ::string &messages , std ::string &warning_level){ 
         /*LOG_CONSOLE 
-            Simple Logging to console helper 
+         -Simple Logging to console helper 
         */
         std :: string console_log = std :: format("{} : {} ",warning_level,messages);
         std::cerr << console_log << '\n' ;
@@ -104,10 +103,8 @@ namespace LOG_HELPER {
 
     void LOG_EXCEPTION (os::path log_file_path ,std :: exception & error ,Level level = Level::ERROR ) {
         /*LOG_EXCEPTION
-            - function to help the method to log exception
-
+         -function to help the method to log exception
         */
-        
         auto time = std :: chrono::system_clock::now() ;
         std :: ofstream File(log_file_path , std ::ios::app) ; 
 
@@ -132,7 +129,8 @@ namespace LOG_HELPER {
 
 }
 
-namespace Log{
+namespace Log{ // Have to change it to class later mock 
+
     std :: string file_name = "text.log" ;
     bool to_console  ;
 
@@ -161,18 +159,14 @@ namespace Log{
     }
 
     void log_exception(std:: exception &e){
-        /*
-        
+        /*log_exception
+        - method for logging exceptions to file 
         */
         os::path log_file_path = create_log(file_name) ;
         LOG_HELPER ::LOG_EXCEPTION(log_file_path ,e) ;
     }
 
 }
-
-
-
-
 
 
 int main () {
@@ -187,8 +181,8 @@ int main () {
         }
     }
     catch(std :: exception &e) {
-        
-        Log::log_exception(e) ;
+        std::cerr<<e.what() ;
+        //Log::log_exception(e) ;
 
     }
     
