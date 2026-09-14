@@ -23,16 +23,9 @@ namespace Log {
             std :: string file_name ;
             bool to_console ;
 
-        void log_file(std::string message , Level level) ;
-
-    }
-
-
-
-
-
-
-
-
+            void log_file(std::string message , Level level) ;
+            void log_console(std::string message ,Level level) ;
+            void log_exception(std::exception &e) ;
+    } ;
 
 }

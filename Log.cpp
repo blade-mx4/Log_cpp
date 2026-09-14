@@ -1,4 +1,4 @@
-// #include "LOG.h" 
+#include "LOG.h" 
 #include<iostream>
 #include<format>
 #include<filesystem>
@@ -9,14 +9,14 @@ namespace os = std :: filesystem ;
 
 /* --------- Configs and Hyper Param--------- */
 
-enum class Level{ // i shall add log level no when the need arises , dont really see the use to add them 
-    INFO ,
-    DEBUG ,
-    WARNING ,
-    ERROR , 
-    CRITICAL ,
+// enum class Level{ // i shall add log level no when the need arises , dont really see the use to add them 
+//     INFO ,
+//     DEBUG ,
+//     WARNING ,
+//     ERROR , 
+//     CRITICAL ,
 
-}  ;
+// }  ;
 
 /*  ---------- Create File Function ------------
     Handles all function for file creation 
@@ -134,7 +134,7 @@ namespace Log{ // Have to change it to class later mock
     std :: string file_name = "text.log" ;
     bool to_console  ;
 
-    void log_file(std:: string message ,Level level) {
+    void Logger::log_file(std:: string message ,Level level) {
         /*log_file
             main methos to log to file  and console if to_console set to true 
 
@@ -149,7 +149,7 @@ namespace Log{ // Have to change it to class later mock
         }    
     }
 
-    void log_console(std::string message , Level level ){
+    void Logger::log_console(std::string message , Level level ){
         /*log_console 
         - main method for writing to console only 
         */
@@ -158,7 +158,7 @@ namespace Log{ // Have to change it to class later mock
     
     }
 
-    void log_exception(std:: exception &e){
+    void Logger::log_exception(std:: exception &e){
         /*log_exception
         - method for logging exceptions to file 
         */
@@ -169,21 +169,4 @@ namespace Log{ // Have to change it to class later mock
 }
 
 
-int main () {
-    Log::to_console = false ;
-    Log::log_file("HELLO" ,Level::INFO) ;
 
-    int y = 1 ;
-
-    try {
-        if (y < 10 ){
-            throw std :: runtime_error("LESS") ;
-        }
-    }
-    catch(std :: exception &e) {
-        std::cerr<<e.what() ;
-        //Log::log_exception(e) ;
-
-    }
-    
-}

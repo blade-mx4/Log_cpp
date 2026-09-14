@@ -1,6 +1,13 @@
 #include<iostream> 
 #include "LOG.h" 
 
-using namespace Log ;
 
 
+Log::Logger Console("log.log" ,true) ;
+
+
+int main () {
+
+    Console.log_file("fuck" , Level ::INFO) ;
+
+}
