@@ -11,7 +11,7 @@
 ## 🚀 Features
 
 * **Zero External Dependencies:** Built entirely using modern C++20 standard libraries.
-* **Automated Folder Management:** Automatically creates and writes to a `LOG/` directory in the working directory.
+* **LOg folder Creation Function :** Create folder in the current working dir for the log file without calling mkdir functions  
 * **Dual Logging Modes:** Log directly to disk, stream directly to console (`std::cerr`), or mirror file logs to standard error.
 * **Structured Severity Levels:** Clear enum support for `INFO`, `DEBUG`, `WARNING`, `ERROR`, and `CRITICAL`.
 

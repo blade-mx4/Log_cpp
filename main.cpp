@@ -8,6 +8,6 @@ Log::Logger Console("log.log" ,true) ;
 
 int main () {
 
-    Console.log_file("fuck" , Level ::INFO) ;
+    Console.log_file("fughkgkhgck" , Level ::WARNING) ;
 
 }
